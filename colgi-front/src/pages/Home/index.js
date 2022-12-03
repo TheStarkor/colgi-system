@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <div>
+      {/* <div>
         <Link to="/auto-search">AutoSearch</Link>
       </div>
       <div>
@@ -11,6 +11,9 @@ const Home = () => {
       </div>
       <div>
         <Link to="/rating">Rating</Link>
+      </div> */}
+      <div>
+        <Link to="/generator">Generator</Link>
       </div>
     </>
   )

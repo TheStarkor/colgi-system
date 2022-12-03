@@ -18,7 +18,7 @@ $ pip3 app.py
 ### Front
 
 ```
-$ cd colgi-exp
+$ cd colgi-front
 $ npm i
 $ npm run start
 ```

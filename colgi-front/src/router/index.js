@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import AutoSearch from "../pages/AutoSearch";
 import SwitchPrompt from "../pages/SwitchPrompt";
 import Rating from "../pages/Rating";
+import Generator from "../pages/Generator";
 
 const Router = () => {
   return(
@@ -14,6 +15,7 @@ const Router = () => {
         <Route exact path="/auto-search" element={<AutoSearch />} />
         <Route exact path="/switch-prompt" element={<SwitchPrompt />} />
         <Route exact path="/rating" element={<Rating />} />
+        <Route exact path="/generator" element={<Generator />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </Suspense>

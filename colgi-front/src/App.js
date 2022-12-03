@@ -5,7 +5,7 @@ import Router from "./router";
 import 'antd/dist/antd.css';
 
 function App() {
-  axios.defaults.baseURL = "http://localhost:5001";
+  axios.defaults.baseURL = "http://localhost:8000";
 
   return (
     <div className="App" style={{padding: '30px'}}>
