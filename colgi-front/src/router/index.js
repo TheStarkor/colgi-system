@@ -6,6 +6,8 @@ import AutoSearch from "../pages/AutoSearch";
 import SwitchPrompt from "../pages/SwitchPrompt";
 import Rating from "../pages/Rating";
 import Generator from "../pages/Generator";
+import TreePrompt from "../pages/TreePrompt";
+import Helper from "../pages/Helper";
 
 const Router = () => {
   return(
@@ -16,6 +18,8 @@ const Router = () => {
         <Route exact path="/switch-prompt" element={<SwitchPrompt />} />
         <Route exact path="/rating" element={<Rating />} />
         <Route exact path="/generator" element={<Generator />} />
+        <Route exact path="/tree-prompt" element={<TreePrompt />} />
+        <Route exact path="/helper" element={<Helper />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </Suspense>
