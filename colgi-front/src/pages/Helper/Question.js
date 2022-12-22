@@ -1,12 +1,21 @@
 import { Button, Row, Popover } from "antd"
+import { RedoOutlined } from '@ant-design/icons'
+import './index.scss'
 
 const Question = (props) => {
   return (
     <>
-      <h3>Click and Check sample answers</h3>
+      {/* <h3>Click and Check sample answers</h3> */}
+      <div className="question-request-container">
+        <div className="question-request-button" type="primary" onClick={props.getQuestion}>
+          <p className="desc">Get More Ideas</p>
+          <RedoOutlined style={{fontSize: '12px'}}/>
+        </div>
+      </div>
+
       {props.suggestions && props.suggestions.map(suggestion => (
         <Row style={{marginTop: '10px'}}>
-          <Popover placement="rightTop" title={suggestion.question} trigger="click" content={
+          <Popover placement="rightTop" title={suggestion.question} trigger="hover" content={
             <>
               <div>{suggestion.answer_1}</div>
               <div>{suggestion.answer_2}</div>
@@ -15,11 +24,10 @@ const Question = (props) => {
               <div>{suggestion.answer_5}</div>
             </>
           }>
-            <Button>{suggestion.question}</Button>
+            <Button style={{width:'100%', border:0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px', fontWeight:'400'}}>{suggestion.question}</Button>
           </Popover>
         </Row>
-      ))}
-      <Button style={{marginTop: '20px'}} type="primary" onClick={props.getQuestion}>Get More Ideas</Button>
+      ))}      
     </>
   )
 }

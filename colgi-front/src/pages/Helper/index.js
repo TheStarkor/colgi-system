@@ -1,7 +1,10 @@
 import { Input, Button, Row } from 'antd';
+import styles from './index.scss'
+
 import { useState } from 'react';
-import { HomeOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import Helper from './Helper';
+import Header from '../../components/Header/Header';
 
 const { Search } = Input;
 
@@ -21,28 +24,33 @@ const InitialPage = () => {
 
   const navigation = () => (
     <>
-      <HomeOutlined onClick={changeStartState} style={{ fontSize: '20px'}} />
+      <div style={{margin:'80px 0 0 20px'}}>
+        <ArrowLeftOutlined onClick={changeStartState} style={{ fontSize: '20px'}} />
+      </div>
     </>
   )
 
   const initialComponent = () => (
-    <>
-      <Row>
-        <Search placeholder="generate what you want" allowClear onSearch={generate} style={{ width: 700 }} size="large" />
-      </Row>
+    <>        
+      <div className='initial-container'>            
+        <Row>
+          <Search placeholder="generate what you want" allowClear onSearch={generate} size="large" />
+        </Row>
 
-      <Row style={{ marginTop: '10px' }}>
-        <Button onClick={changeStartState} type="primary">Start without initial prompt</Button>
-      </Row>
+        <Row style={{ marginTop: '10px'}}>
+          <p className='button-desc'>If you don't have anything in mind</p>
+          <div className='button' onClick={changeStartState} type="primary">Start without initial prompt</div>
+        </Row>
+      </div>
     </>
   )
 
   return (
     <>
-      <div style={{marginBottom: '20px'}}>
+      <Header/>  
+      <div>
         {isStart ? navigation() : initialComponent()}
       </div>
-
 
       {(isStart) && <Helper prompt={prompt} />}
     </>

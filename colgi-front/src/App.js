@@ -8,7 +8,9 @@ function App() {
   axios.defaults.baseURL = "http://localhost:8000";
 
   return (
-    <div className="App" style={{padding: '30px'}}>
+    <div className="App" 
+      //style={{padding: '30px'}}
+    >
       <BrowserRouter>
         <Router />
       </BrowserRouter>

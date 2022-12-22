@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 
 import { Button, Row, Col, Popover } from "antd"
+import { CaretRightOutlined } from '@ant-design/icons'
 
 import { questionPrompt, solutionPrompt } from "./promptHelper";
 import { qna as dummyQna, images as dummyImages } from './dummyData';
@@ -108,7 +109,7 @@ const Helper = (props) => {
       new_prompts[`p${Number(idx) + 1}_answer`] = value
       new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
       new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
-      setPrompt({...new_prompts})
+      setPrompt({ ...new_prompts })
     })
   }
 
@@ -125,38 +126,56 @@ const Helper = (props) => {
 
   return (
     <>
-      <h2>Check Your History</h2>
+      <div className="helper-container">
+        <div className="helper-box">
+          <div className="history-container">
+            <h2>Check Your History</h2>
+            <p>You can generate images based on your Q&A and histories</p>
+            <Row style={{ backgroundColor: '#EEEEEE', padding: '20px', display: 'flex' }}>
+              <Col span={24}>
+                {props.prompt &&
+                  <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
+                    <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', border: '1px solid #A3A3A3' }} type="primary">{props.prompt}</Button>
+                  </Popover>
+                }
 
-      <Row style={{marginBottom: '20px'}}>
-        <Col span={24}>
-          {props.prompt &&
-            <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
-              <Button style={{marginRight: '5px'}}  type="primary">{props.prompt}</Button>
-            </Popover>
-          }
+                {histories && histories.map(history => (
+                  <>
+                    <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
+                      <Button style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
+                    </Popover>
+                  </>
+                ))}
+              </Col>
+            </Row>
+          </div>
 
-          {histories && histories.map(history => (
-            <>
-              <Popover placement="top" title={history.question} content={history.answer} trigger="hover">
-                <Button style={{marginRight: '5px'}}>{history.answer}</Button>
-              </Popover>
-            </>
-          ))}
-        </Col>
-      </Row>
+          {/* <h3>Test Your Ideas</h3> */}
+          <div className="question-container">
+            <h2>Get questions and give answer</h2>
+            <p>You can get random questions based on your history</p>
+            <Row style={{marginTop:'20px'}}>
+              <Col span={8}>
+                <Question suggestions={suggestions} getQuestion={getQuestion} />
+              </Col>
+              <Col span={1}>
+                <div className="center-arrow">
+                  <CaretRightOutlined style={{color:'gray', fontSize:'20px'}}/>
+                </div>
+              </Col>
+              <Col span={15}>
+                <Answer onFinish={onFinish} />
+              </Col>
+            </Row>
+          </div>
 
-      <h3>Test Your Ideas</h3>
-      <p>You can generate images based on your Q&A and histories</p>
-      <Row style={{marginTop: '40px'}}>
-        <Col span={8}>
-          <Question suggestions={suggestions} getQuestion={getQuestion} />
-        </Col>
-        <Col span={16}>
-          <Answer onFinish={onFinish} />
-        </Col>
-      </Row>
-
-      {prompts?.p1 !== '' && <ShowImage prompts={prompts} addHistory={addHistory} />}
+          <div className="photo-container">
+          <h2>Generated Images</h2>
+            <p>You can get random questions based on your history</p>
+            {prompts?.p1 !== '' && <ShowImage prompts={prompts} addHistory={addHistory} />}
+          </div>
+        </div>
+      </div>
     </>
   )
 }

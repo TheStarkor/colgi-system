@@ -13,7 +13,7 @@ const Router = () => {
   return(
     <Suspense>
       <Routes>
-        <Route exact path="/" element={<Home />} />
+        <Route exact path="/" element={<Helper />} />
         <Route exact path="/auto-search" element={<AutoSearch />} />
         <Route exact path="/switch-prompt" element={<SwitchPrompt />} />
         <Route exact path="/rating" element={<Rating />} />
