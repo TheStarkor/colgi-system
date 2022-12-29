@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
 
-import { Button, Row, Col, Popover } from "antd"
+import { Button, Row, Col, Popover, Form } from "antd"
 import { CaretRightOutlined } from '@ant-design/icons'
 
 import { questionPrompt, solutionPrompt } from "./promptHelper";
@@ -19,25 +19,27 @@ const Helper = (props) => {
   const [histories, setHistory] = useState(null);
   const [suggestions, setSuggestion] = useState(null);
   const [prompts, setPrompt] = useState(null)
+  const [form] = Form.useForm();
 
   useEffect(() => {
     setHistory([])
     initPrompts();
+    getQuestion();
   }, []);
 
-  const getQuestion = async () => {
+  const getQuestion = async (histories = null) => {
     /* --------------- 실제 환경 ------------------ */
-    // const prompt = questionPrompt(histories);
-    // const resp = await axios.post(`/gpt/complete`, {
-    //   prompt: prompt,
-    //   cnt: 4,
-    //   type: 'qna'
-    // });
+    const prompt = questionPrompt(histories, props.prompt);
+    const resp = await axios.post(`/gpt/complete`, {
+      prompt: prompt,
+      cnt: 4,
+      type: 'qna'
+    });
 
-    // setSuggestion(resp.data.result)
+    setSuggestion(resp.data.result)
 
     /* --------------- 더미 ------------------ */
-    setSuggestion(dummyQna)
+    // setSuggestion(dummyQna)
   }
 
   const initPrompts = () => {
@@ -87,42 +89,49 @@ const Helper = (props) => {
     items.map(async (value, idx) => {
       if (!value) return;
       /* --------------- 실제 환경 ------------------ */
-      // const prompt = solutionPrompt(histories, values, value)
+      const prompt = solutionPrompt(histories, values, value, props.prompt)
 
-      // const resp = await axios.post(`/gpt/complete`, {
-      //   prompt: prompt,
-      //   cnt: 1,
-      // });
+      const resp = await axios.post(`/gpt/complete`, {
+        prompt: prompt,
+        cnt: 1,
+      });
 
-      // new_prompts[`p${Number(idx) + 1}_answer`] = value
-      // new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
-      // setPrompt({...new_prompts})
+      new_prompts[`p${Number(idx) + 1}_answer`] = value
+      new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
+      setPrompt({...new_prompts})
 
-      // // const img_resp = await axios.get(generateUrl(resp.data.result[0]))
+      const img_resp = await axios.get(generateUrl(resp.data.result[0]))
       // const img_resp = await axios.get('?cnt=6')
-      // console.log(img_resp.data.result)
-      // new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
-      // setPrompt({...new_prompts})
+      new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
+      setPrompt({...new_prompts})
 
 
       /* --------------- 더미 ------------------ */
-      new_prompts[`p${Number(idx) + 1}_answer`] = value
-      new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
-      new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
-      setPrompt({ ...new_prompts })
+      // new_prompts[`p${Number(idx) + 1}_answer`] = value
+      // new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
+      // new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
+      // setPrompt({ ...new_prompts })
     })
   }
 
   const addHistory = ({ question, answer }) => {
-    setHistory([
+    const new_history = [
       ...histories,
       {
         question: question,
         answer: answer
       }
-    ])
-    getQuestion();
+    ]
+
+    setHistory(new_history)
+    getQuestion(new_history);
   };
+
+  const onFill = (values) => {
+    form.setFieldsValue({
+      question: values.question
+    })
+  }
 
   return (
     <>
@@ -135,7 +144,7 @@ const Helper = (props) => {
               <Col span={24}>
                 {props.prompt &&
                   <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
-                    <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', border: '1px solid #A3A3A3' }} type="primary">{props.prompt}</Button>
+                    <Button style={{marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color:'black', borderRadius: '30px', boxShadow:'0 2px 0 rgb(0 0 0 / 2%)'}} type="primary">{props.prompt}</Button>
                   </Popover>
                 }
 
@@ -156,7 +165,7 @@ const Helper = (props) => {
             <p>You can get random questions based on your history</p>
             <Row style={{marginTop:'20px'}}>
               <Col span={8}>
-                <Question suggestions={suggestions} getQuestion={getQuestion} />
+                <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
               </Col>
               <Col span={1}>
                 <div className="center-arrow">
@@ -164,7 +173,7 @@ const Helper = (props) => {
                 </div>
               </Col>
               <Col span={15}>
-                <Answer onFinish={onFinish} />
+                <Answer form={form} onFinish={onFinish} />
               </Col>
             </Row>
           </div>

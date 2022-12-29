@@ -24,10 +24,10 @@ const Question = (props) => {
               <div>{suggestion.answer_5}</div>
             </>
           }>
-            <Button style={{width:'100%', border:0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px', fontWeight:'400'}}>{suggestion.question}</Button>
+            <Button onClick={() => props.onFill(suggestion)} style={{width:'100%', border:0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px', fontWeight:'400'}}>{suggestion.question}</Button>
           </Popover>
         </Row>
-      ))}      
+      ))}
     </>
   )
 }

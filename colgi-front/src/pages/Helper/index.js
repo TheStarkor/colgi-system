@@ -1,5 +1,4 @@
-import { Input, Button, Row } from 'antd';
-import styles from './index.scss'
+import { Input, Row } from 'antd';
 
 import { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons'
@@ -31,8 +30,8 @@ const InitialPage = () => {
   )
 
   const initialComponent = () => (
-    <>        
-      <div className='initial-container'>            
+    <>
+      <div className='initial-container'>
         <Row>
           <Search placeholder="generate what you want" allowClear onSearch={generate} size="large" />
         </Row>
@@ -47,7 +46,7 @@ const InitialPage = () => {
 
   return (
     <>
-      <Header/>  
+      <Header/>
       <div>
         {isStart ? navigation() : initialComponent()}
       </div>

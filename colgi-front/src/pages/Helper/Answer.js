@@ -6,6 +6,7 @@ const Answer = (props) => {
     <>
       <div className="answer-container">
       <Form
+        form={props.form}
         name="basic"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
@@ -52,13 +53,13 @@ const Answer = (props) => {
           <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label="Answer 5"
           name="answer5"
           rules={[{ message: 'Please input your Answer!' }]}
         >
           <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 1, span: 23 }}>
           <Button style={{width:'100%', backgroundColor:'gray', border:0, borderRadius:'5px'}} type="primary" htmlType="submit">
