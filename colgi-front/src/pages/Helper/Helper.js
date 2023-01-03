@@ -29,17 +29,17 @@ const Helper = (props) => {
 
   const getQuestion = async (histories = null) => {
     /* --------------- 실제 환경 ------------------ */
-    const prompt = questionPrompt(histories, props.prompt);
-    const resp = await axios.post(`/gpt/complete`, {
-      prompt: prompt,
-      cnt: 4,
-      type: 'qna'
-    });
+    // const prompt = questionPrompt(histories, props.prompt);
+    // const resp = await axios.post(`/gpt/complete`, {
+    //   prompt: prompt,
+    //   cnt: 4,
+    //   type: 'qna'
+    // });
 
-    setSuggestion(resp.data.result)
+    // setSuggestion(resp.data.result)
 
     /* --------------- 더미 ------------------ */
-    // setSuggestion(dummyQna)
+    setSuggestion(dummyQna)
   }
 
   const initPrompts = () => {
@@ -89,37 +89,38 @@ const Helper = (props) => {
     items.map(async (value, idx) => {
       if (!value) return;
       /* --------------- 실제 환경 ------------------ */
-      const prompt = solutionPrompt(histories, values, value, props.prompt)
+      // const prompt = solutionPrompt(histories, values, value, props.prompt)
 
-      const resp = await axios.post(`/gpt/complete`, {
-        prompt: prompt,
-        cnt: 1,
-      });
+      // const resp = await axios.post(`/gpt/complete`, {
+      //   prompt: prompt,
+      //   cnt: 1,
+      // });
 
-      new_prompts[`p${Number(idx) + 1}_answer`] = value
-      new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
-      setPrompt({...new_prompts})
+      // new_prompts[`p${Number(idx) + 1}_answer`] = value
+      // new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
+      // setPrompt({...new_prompts})
 
-      const img_resp = await axios.get(generateUrl(resp.data.result[0]))
-      // const img_resp = await axios.get('?cnt=6')
-      new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
-      setPrompt({...new_prompts})
+      // const img_resp = await axios.get(generateUrl(resp.data.result[0]))
+      // // const img_resp = await axios.get('?cnt=6')
+      // new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
+      // setPrompt({...new_prompts})
 
 
       /* --------------- 더미 ------------------ */
-      // new_prompts[`p${Number(idx) + 1}_answer`] = value
-      // new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
-      // new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
-      // setPrompt({ ...new_prompts })
+      new_prompts[`p${Number(idx) + 1}_answer`] = value
+      new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
+      new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
+      setPrompt({ ...new_prompts })
     })
   }
 
-  const addHistory = ({ question, answer }) => {
+  const addHistory = ({ question, answer, images }) => {
     const new_history = [
       ...histories,
       {
         question: question,
-        answer: answer
+        answer: answer,
+        images: images
       }
     ]
 

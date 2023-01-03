@@ -16,7 +16,7 @@ const ShowImage = (props) => {
           </Row>))}
 
           <div className='showimage-button-container'>
-            {props.prompts?.p1 && <Button onClick={() => props.addHistory({ question: props.prompts?.q, answer: props.prompts?.p1_answer })} type='primary' style={{ marginTop: '10px', backgroundColor: 'gray', border: 0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px' }}>Confirm</Button>}
+            {props.prompts?.p1 && <Button onClick={() => props.addHistory({ question: props.prompts?.q, answer: props.prompts?.p1_answer, images: props.prompts?.p1_images })} type='primary' style={{ marginTop: '10px', backgroundColor: 'gray', border: 0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px' }}>Confirm</Button>}
           </div>
         </Row>}
 
