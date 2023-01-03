@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
 
-import { Button, Row, Col, Popover, Form } from "antd"
+import { Button, Row, Col, Popover, Form, Image } from "antd"
 import { CaretRightOutlined } from '@ant-design/icons'
 
 import { questionPrompt, solutionPrompt } from "./promptHelper";
@@ -16,13 +16,13 @@ const generateUrl = (prompt) => {
 }
 
 const Helper = (props) => {
-  const [histories, setHistory] = useState(null);
+  const [histories, setHistory] = useState([]);
   const [suggestions, setSuggestion] = useState(null);
   const [prompts, setPrompt] = useState(null)
   const [form] = Form.useForm();
+  const [savedHistories, setSavedHistory] = useState([]);
 
   useEffect(() => {
-    setHistory([])
     initPrompts();
     getQuestion();
   }, []);
@@ -115,14 +115,33 @@ const Helper = (props) => {
   }
 
   const addHistory = ({ question, answer, images }) => {
+    // prompts.map(prompt => {
+    //   console.log(prompt)
+    // })
+    // console.log(prompts)
     const new_history = [
       ...histories,
       {
-        question: question,
-        answer: answer,
-        images: images
+        question: prompts.q,
+        answer: prompts.p1_answer,
+        prompt: prompts.p1,
+        images: prompts.p1_images,
+        others: [
+          {
+            answer: prompts.p2_answer,
+            images: prompts.p1_images,
+            prompt: prompts.p2
+          },
+          {
+            answer: prompts.p3_answer,
+            images: prompts.p1_images,
+            prompt: prompts.p3
+          }
+        ]
       }
     ]
+
+    console.log(new_history)
 
     setHistory(new_history)
     getQuestion(new_history);
@@ -134,6 +153,44 @@ const Helper = (props) => {
     })
   }
 
+  const undo = (histories) => {
+    console.log('hey', histories)
+    histories.pop()
+
+    setHistory([...histories])
+
+  }
+
+  const saveDirection = (histories) => {
+    const temp_history = [...savedHistories, histories]
+    console.log('temp', temp_history)
+    setSavedHistory(temp_history)
+    console.log('savedHistories', savedHistories)
+  }
+
+  // console.log('d', savedHistories[0])
+
+  const rollback = (history) => {
+    console.log(history)
+    let new_prompts = {
+      q: history.question,
+      p1: history.prompt,
+      p1_answer: history.answer,
+      p1_images: history.images,
+      p2: history.others[0].prompt,
+      p2_answer: history.others[0].answer,
+      p2_images: history.others[0].images,
+      p3: history.others[1].prompt,
+      p3_answer: history.others[1].answer,
+      p3_images: history.others[1].images,
+      p4: '',
+      p4_answer: '',
+      p4_images: [],
+    }
+    console.log(new_prompts)
+    setPrompt(new_prompts)
+  }
+
   return (
     <>
       <div className="helper-container">
@@ -141,36 +198,52 @@ const Helper = (props) => {
           <div className="history-container">
             <h2>Check Your History</h2>
             <p>You can generate images based on your Q&A and histories</p>
+            {(histories?.length !== 0) && <Button onClick={() => undo(histories)}>Undo</Button>}
             <Row style={{ backgroundColor: '#EEEEEE', padding: '20px', display: 'flex' }}>
               <Col span={24}>
                 {props.prompt &&
                   <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
-                    <Button style={{marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color:'black', borderRadius: '30px', boxShadow:'0 2px 0 rgb(0 0 0 / 2%)'}} type="primary">{props.prompt}</Button>
+                    <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color: 'black', borderRadius: '30px', boxShadow: '0 2px 0 rgb(0 0 0 / 2%)' }} type="primary">{props.prompt}</Button>
                   </Popover>
                 }
 
                 {histories && histories.map(history => (
                   <>
                     <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
-                      <Button style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
+                      <Button onClick={() => rollback(history)} style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
                     </Popover>
+                    <Image
+                      style={{ width: '50px', height: '50px' }}
+                      src={history?.images[0]}
+                    />
                   </>
                 ))}
               </Col>
             </Row>
+            <Button onClick={() => saveDirection(histories)}>save direction</Button>
+            {savedHistories?.length !== 0 && savedHistories.map(savedHistory => (
+              <>
+                { }
+                <div>{savedHistory[0]?.question}</div>
+                <div>{savedHistory[0]?.answer}</div>
+                <Image style={{ width: '50px', height: '50px' }}
+                  src={savedHistory[0]?.images[0]} />
+              </>
+            ))}
+
           </div>
 
           {/* <h3>Test Your Ideas</h3> */}
           <div className="question-container">
             <h2>Get questions and give answer</h2>
             <p>You can get random questions based on your history</p>
-            <Row style={{marginTop:'20px'}}>
+            <Row style={{ marginTop: '20px' }}>
               <Col span={8}>
                 <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
               </Col>
               <Col span={1}>
                 <div className="center-arrow">
-                  <CaretRightOutlined style={{color:'gray', fontSize:'20px'}}/>
+                  <CaretRightOutlined style={{ color: 'gray', fontSize: '20px' }} />
                 </div>
               </Col>
               <Col span={15}>
@@ -180,7 +253,7 @@ const Helper = (props) => {
           </div>
 
           <div className="photo-container">
-          <h2>Generated Images</h2>
+            <h2>Generated Images</h2>
             <p>You can get random questions based on your history</p>
             {prompts?.p1 !== '' && <ShowImage prompts={prompts} addHistory={addHistory} />}
           </div>
