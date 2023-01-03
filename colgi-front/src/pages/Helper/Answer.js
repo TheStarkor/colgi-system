@@ -26,7 +26,7 @@ const Answer = (props) => {
           name="answer1"
           rules={[{ required: true, message: 'Please input your Answer!' }]}
         >
-          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
+          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}} placeholder={props?.selected?.answer_1}/>
         </Form.Item>
 
         <Form.Item
@@ -34,7 +34,7 @@ const Answer = (props) => {
           name="answer2"
           rules={[{ message: 'Please input your Answer!' }]}
         >
-          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
+          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}} placeholder={props?.selected?.answer_2}/>
         </Form.Item>
 
         <Form.Item
@@ -42,7 +42,7 @@ const Answer = (props) => {
           name="answer3"
           rules={[{ message: 'Please input your Answer!' }]}
         >
-          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
+          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}} placeholder={props?.selected?.answer_3}/>
         </Form.Item>
 
         <Form.Item
@@ -50,7 +50,7 @@ const Answer = (props) => {
           name="answer4"
           rules={[{ message: 'Please input your Answer!' }]}
         >
-          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}}/>
+          <Input style={{width:'100%', border: '1px solid #D9D9D9', borderRadius: '5px', fontWeight:'400'}} placeholder={props?.selected?.answer_4}/>
         </Form.Item>
 
         {/* <Form.Item
