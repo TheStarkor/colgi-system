@@ -20,6 +20,8 @@ const Helper = (props) => {
   const [suggestions, setSuggestion] = useState(null);
   const [prompts, setPrompt] = useState(null)
   const [form] = Form.useForm();
+  const [selected, setSelected] = useState(null);
+  const [questionLoading, setQuestionLoading] = useState(false);
 
   useEffect(() => {
     setHistory([])
@@ -28,6 +30,7 @@ const Helper = (props) => {
   }, []);
 
   const getQuestion = async (histories = null) => {
+    setQuestionLoading(true);
     /* --------------- 실제 환경 ------------------ */
     // const prompt = questionPrompt(histories, props.prompt);
     // const resp = await axios.post(`/gpt/complete`, {
@@ -40,6 +43,8 @@ const Helper = (props) => {
 
     /* --------------- 더미 ------------------ */
     setSuggestion(dummyQna)
+
+    setQuestionLoading(false);
   }
 
   const initPrompts = () => {
@@ -115,14 +120,33 @@ const Helper = (props) => {
   }
 
   const addHistory = ({ question, answer, images }) => {
+    // prompts.map(prompt => {
+    //   console.log(prompt)
+    // })
+    // console.log(prompts)
     const new_history = [
       ...histories,
       {
-        question: question,
-        answer: answer,
-        images: images
+        question: prompts.q,
+        answer: prompts.p1_answer,
+        prompt: prompts.p1,
+        images: prompts.p1_images,
+        others: [
+          {
+            answer: prompts.p2_answer,
+            images: prompts.p1_images,
+            prompt: prompts.p2
+          },
+          {
+            answer: prompts.p3_answer,
+            images: prompts.p1_images,
+            prompt: prompts.p3
+          }
+        ]
       }
     ]
+
+    console.log(new_history)
 
     setHistory(new_history)
     getQuestion(new_history);
@@ -132,6 +156,7 @@ const Helper = (props) => {
     form.setFieldsValue({
       question: values.question
     })
+    setSelected(values);
   }
 
   return (
@@ -166,7 +191,7 @@ const Helper = (props) => {
             <p>You can get random questions based on your history</p>
             <Row style={{marginTop:'20px'}}>
               <Col span={8}>
-                <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
+                <Question isLoading={questionLoading} onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
               </Col>
               <Col span={1}>
                 <div className="center-arrow">
@@ -174,7 +199,7 @@ const Helper = (props) => {
                 </div>
               </Col>
               <Col span={15}>
-                <Answer form={form} onFinish={onFinish} />
+                <Answer form={form} onFinish={onFinish} selected={selected} />
               </Col>
             </Row>
           </div>
