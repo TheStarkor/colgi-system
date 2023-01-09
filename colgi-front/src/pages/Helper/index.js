@@ -23,7 +23,7 @@ const InitialPage = () => {
 
   const navigation = () => (
     <>
-      <div style={{margin:'80px 0 0 20px'}}>
+      <div style={{padding:'80px 0 0 20px', width:'400px', backgroundColor:'#F8F8F8'}}>
         <ArrowLeftOutlined onClick={changeStartState} style={{ fontSize: '20px'}} />
       </div>
     </>
@@ -36,7 +36,7 @@ const InitialPage = () => {
           <Search placeholder="generate what you want" allowClear onSearch={generate} size="large" />
         </Row>
 
-        <Row style={{ marginTop: '10px'}}>
+        <Row>
           <p className='button-desc'>If you don't have anything in mind</p>
           <div className='button' onClick={changeStartState} type="primary">Start without initial prompt</div>
         </Row>

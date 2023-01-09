@@ -14,8 +14,7 @@ const Question = (props) => {
       </div>
 
       {props.suggestions && props.suggestions.map(suggestion => (
-        <Row style={{marginTop: '10px'}}>
-          <Popover placement="rightTop" title={suggestion.question} trigger="hover" content={
+          <div placement="rightTop" title={suggestion.question} content={
             <>
               <div>{suggestion.answer_1}</div>
               <div>{suggestion.answer_2}</div>
@@ -24,9 +23,8 @@ const Question = (props) => {
               <div>{suggestion.answer_5}</div>
             </>
           }>
-            <Button onClick={() => props.onFill(suggestion)} style={{width:'100%', border:0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px', fontWeight:'400'}}>{suggestion.question}</Button>
-          </Popover>
-        </Row>
+            <Button onClick={() => props.onFill(suggestion)} style={{width:'530px',marginBottom:'16px', border:0, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: '5px', fontWeight:'400'}}>{suggestion.question}</Button>
+          </div>
       ))}
     </>
   )

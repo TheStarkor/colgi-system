@@ -194,69 +194,71 @@ const Helper = (props) => {
   return (
     <>
       <div className="helper-container">
-        <div className="helper-box">
-          <div className="history-container">
-            <h2>Check Your History</h2>
-            <p>You can generate images based on your Q&A and histories</p>
-            {(histories?.length !== 0) && <Button onClick={() => undo(histories)}>Undo</Button>}
-            <Row style={{ backgroundColor: '#EEEEEE', padding: '20px', display: 'flex' }}>
-              <Col span={24}>
-                {props.prompt &&
-                  <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
-                    <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color: 'black', borderRadius: '30px', boxShadow: '0 2px 0 rgb(0 0 0 / 2%)' }} type="primary">{props.prompt}</Button>
-                  </Popover>
-                }
+        <div className="history-container">
 
-                {histories && histories.map(history => (
+          <h2>Check Your History</h2>
+          <p>You can generate images based on your Q&A and histories</p>
+          {/* {(histories?.length !== 0) && <Button onClick={() => undo(histories)}>Undo</Button>} */}
+
+          {props.prompt &&
+            <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
+              <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color: 'black', borderRadius: '30px', boxShadow: '0 2px 0 rgb(0 0 0 / 2%)' }} type="primary">{props.prompt}</Button>
+            </Popover>
+          }
+
+          {histories && histories.map(history => (
+            <>
+              {/* <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
+                    <Button onClick={() => rollback(history)} style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
+                  </Popover>
+                   */}
+              <div className='history-box' onClick={() => rollback(history)}>
+                <div className='question'>Q. {history.question}</div>
+                <div className='answer'>A. {history.answer}</div>
+                {history?.images.map(image => (
                   <>
-                    <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
-                      <Button onClick={() => rollback(history)} style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
-                    </Popover>
                     <Image
-                      style={{ width: '50px', height: '50px' }}
-                      src={history?.images[0]}
+                      style={{ width: '52px', height: '52px', margin: '4px 0' }}
+                      src={image}
                     />
                   </>
                 ))}
-              </Col>
-            </Row>
-            <Button onClick={() => saveDirection(histories)}>save direction</Button>
-            {savedHistories?.length !== 0 && savedHistories.map(savedHistory => (
-              <>
-                { }
-                <div>{savedHistory[0]?.question}</div>
-                <div>{savedHistory[0]?.answer}</div>
-                <Image style={{ width: '50px', height: '50px' }}
-                  src={savedHistory[0]?.images[0]} />
-              </>
-            ))}
-
-          </div>
-
-          {/* <h3>Test Your Ideas</h3> */}
-          <div className="question-container">
-            <h2>Get questions and give answer</h2>
-            <p>You can get random questions based on your history</p>
-            <Row style={{ marginTop: '20px' }}>
-              <Col span={8}>
-                <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
-              </Col>
-              <Col span={1}>
-                <div className="center-arrow">
-                  <CaretRightOutlined style={{ color: 'gray', fontSize: '20px' }} />
+                <div>
+                  {(history?.others[0].answer.length !== 0) && <span>others: </span>}
+                  {history?.others.map(other => (
+                    <span className='question'>{other.answer} </span>
+                  ))}
                 </div>
-              </Col>
-              <Col span={15}>
-                <Answer form={form} onFinish={onFinish} />
-              </Col>
-            </Row>
-          </div>
 
-          <div className="photo-container">
-            <h2>Generated Images</h2>
-            <p>You can get random questions based on your history</p>
-            {prompts?.p1 !== '' && <ShowImage prompts={prompts} addHistory={addHistory} />}
-          </div>
+
+              </div>
+            </>
+          ))}
+          {/* <Button onClick={() => saveDirection(histories)}>save direction</Button>
+          {savedHistories?.length !== 0 && savedHistories.map(savedHistory => (
+            <>
+              { }
+              <div>{savedHistory[0]?.question}</div>
+              <div>{savedHistory[0]?.answer}</div>
+              <Image style={{ width: '50px', height: '50px' }}
+                src={savedHistory[0]?.images[0]} />
+            </>
+          ))} */}
+
+        </div>
+
+        {/* <h3>Test Your Ideas</h3> */}
+        <div className="question-container">
+          <h2>Get questions and give answer</h2>
+          <p>You can get random questions based on your history</p>
+          <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
+          <Answer form={form} onFinish={onFinish} />
+        </div>
+
+        <div className="photo-container">
+          <h2>Generated Images</h2>
+          <p>You can get random questions based on your history</p>
+          {prompts?.p1 !== '' && <ShowImage prompts={prompts} addHistory={addHistory} />}
         </div>
       </div>
     </>
