@@ -21,6 +21,7 @@ const Helper = (props) => {
   const [prompts, setPrompt] = useState(null)
   const [form] = Form.useForm();
   const [savedHistories, setSavedHistory] = useState([]);
+  const [sAnswers, setSAnswers] = useState([])
 
   useEffect(() => {
     initPrompts();
@@ -149,8 +150,13 @@ const Helper = (props) => {
 
   const onFill = (values) => {
     form.setFieldsValue({
-      question: values.question
+      question: values.question,
+      // s_answer_1 : values.answer_1,
+      // s_answer_2 : values.answer_2,
+      // s_answer_3 : values.answer_3,
+      // s_answer_4 : values.answer_4,
     })
+    setSAnswers([values.answer_1, values.answer_2, values.answer_3,values.answer_4])
   }
 
   const undo = (histories) => {
@@ -252,7 +258,7 @@ const Helper = (props) => {
           <h2>Get questions and give answer</h2>
           <p>You can get random questions based on your history</p>
           <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
-          <Answer form={form} onFinish={onFinish} />
+          <Answer form={form} onFinish={onFinish} sAnswers={sAnswers} onFill={onFill}/>
         </div>
 
         <div className="photo-container">
