@@ -22,6 +22,8 @@ const Helper = (props) => {
   const [form] = Form.useForm();
   const [savedHistories, setSavedHistory] = useState([]);
   const [sAnswers, setSAnswers] = useState([])
+  const [selectedIdx, setSelectedIdx] = useState(100);
+  const [isRollback, setIsRollback] = useState(false);
 
   useEffect(() => {
     initPrompts();
@@ -156,7 +158,7 @@ const Helper = (props) => {
       // s_answer_3 : values.answer_3,
       // s_answer_4 : values.answer_4,
     })
-    setSAnswers([values.answer_1, values.answer_2, values.answer_3,values.answer_4])
+    setSAnswers([values.answer_1, values.answer_2, values.answer_3, values.answer_4])
   }
 
   const undo = (histories) => {
@@ -176,8 +178,9 @@ const Helper = (props) => {
 
   // console.log('d', savedHistories[0])
 
-  const rollback = (history) => {
-    console.log(history)
+  const rollback = (history, idx) => {
+    setSelectedIdx(idx)
+    setIsRollback(true)
     let new_prompts = {
       q: history.question,
       p1: history.prompt,
@@ -197,34 +200,58 @@ const Helper = (props) => {
     setPrompt(new_prompts)
   }
 
+  const cancelRollback = () => {
+    setIsRollback(false)
+    setSelectedIdx(100)
+  }
+  const confirmRollback = () => {
+    //console.log('sliced', histories.slice(0, selectedIdx + 1))
+    setHistory([...histories.slice(0, selectedIdx + 1)])
+    cancelRollback()
+  }
+
+  const historyRevert = (history) => {
+    console.log('saved', history)
+    //TODO 경고창 띄워주기, 저장개수가 무한으로 늘어남...
+    setHistory([...history])
+    cancelRollback()
+  }
+
+  // console.log('history', selectedIdx)
   return (
     <>
       <div className="helper-container">
         <div className="history-container">
 
           <h2>Check Your History</h2>
+          {isRollback &&
+            <>
+              <Button onClick={cancelRollback}>Cancel</Button>
+              <Button onClick={confirmRollback}>Confirm</Button>
+            </>
+          }
           <p>You can generate images based on your Q&A and histories</p>
           {/* {(histories?.length !== 0) && <Button onClick={() => undo(histories)}>Undo</Button>} */}
 
           {props.prompt &&
             <Popover placement="top" title="Initial Prompt" content={props.prompt} trigger="hover">
-              <Button style={{ marginRight: '5px', marginBottom: '8px', backgroundColor: 'white', fontWeight: '600', border: '2px solid #a3a3a3', color: 'black', borderRadius: '30px', boxShadow: '0 2px 0 rgb(0 0 0 / 2%)' }} type="primary">{props.prompt}</Button>
+              <Button className="history-initial" type="primary">{props.prompt}</Button>
             </Popover>
           }
 
-          {histories && histories.map(history => (
+          {histories && histories.map((history, idx) => (
             <>
               {/* <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
                     <Button onClick={() => rollback(history)} style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
                   </Popover>
                    */}
-              <div className='history-box' onClick={() => rollback(history)}>
+              <div className={`history-box ${(selectedIdx < idx) ? 'disabled' : ''}`} onClick={() => rollback(history, idx)}>
                 <div className='question'>Q. {history.question}</div>
                 <div className='answer'>A. {history.answer}</div>
                 {history?.images.map(image => (
                   <>
                     <Image
-                      style={{ width: '52px', height: '52px', margin: '4px 0' }}
+                      className ='image'
                       src={image}
                     />
                   </>
@@ -240,16 +267,19 @@ const Helper = (props) => {
               </div>
             </>
           ))}
-          {/* <Button onClick={() => saveDirection(histories)}>save direction</Button>
+          <Button onClick={() => saveDirection(histories)}>save direction</Button>
+
           {savedHistories?.length !== 0 && savedHistories.map(savedHistory => (
             <>
-              { }
-              <div>{savedHistory[0]?.question}</div>
-              <div>{savedHistory[0]?.answer}</div>
-              <Image style={{ width: '50px', height: '50px' }}
-                src={savedHistory[0]?.images[0]} />
+              <div className="saved-box">
+                <div>{savedHistory[0]?.question}</div>
+                <div>{savedHistory[0]?.answer}</div>
+                <Image style={{ width: '50px', height: '50px' }}
+                  src={savedHistory[0]?.images[0]} />
+                <Button onClick={() => historyRevert(savedHistory)}>Revert</Button>
+              </div>
             </>
-          ))} */}
+          ))}
 
         </div>
 
@@ -258,7 +288,7 @@ const Helper = (props) => {
           <h2>Get questions and give answer</h2>
           <p>You can get random questions based on your history</p>
           <Question onFill={onFill} suggestions={suggestions} getQuestion={() => getQuestion(histories)} />
-          <Answer form={form} onFinish={onFinish} sAnswers={sAnswers} onFill={onFill}/>
+          <Answer form={form} onFinish={onFinish} sAnswers={sAnswers} onFill={onFill} />
         </div>
 
         <div className="photo-container">

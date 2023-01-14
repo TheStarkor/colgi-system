@@ -44,7 +44,17 @@
         width: 400px;
         height: 100%;
         background-color: #F8F8F8;
-        padding:28px;        
+        padding:28px;
+        .history-initial{    
+            margin-right: 5px;
+            margin-bottom: 8px;
+            background-color: white;
+            font-weight: 600;
+            border:2px solid #a3a3a3;
+            color: black;
+            border-radius: 30px;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.02);
+        }        
         .history-box{
             width: 100%;
             background-color: white;
@@ -53,6 +63,7 @@
             padding: 12px 16px;
             margin-bottom: 12px;
             cursor:pointer;
+            
             .question{
                 font-weight: 400;
                 font-size: 12px;
@@ -65,6 +76,17 @@
                 line-height: 22px;
                 color: #000000;
             }
+            .image{
+                width: 52px;
+                height:52px;
+                margin: 4px 0;
+            }
+        }
+        .disabled{
+            background-color: black;
+        }
+        .saved-box{
+            background-color: white;
         }
     }
 
