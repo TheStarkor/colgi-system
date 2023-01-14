@@ -27,22 +27,25 @@ const Helper = (props) => {
     setHistory([])
     initPrompts();
     getQuestion();
+    if (props?.prompt) {
+      generateInitialImage()
+    }
   }, []);
 
   const getQuestion = async (histories = null) => {
     setQuestionLoading(true);
     /* --------------- 실제 환경 ------------------ */
-    // const prompt = questionPrompt(histories, props.prompt);
-    // const resp = await axios.post(`/gpt/complete`, {
-    //   prompt: prompt,
-    //   cnt: 4,
-    //   type: 'qna'
-    // });
+    const prompt = questionPrompt(histories, props.prompt);
+    const resp = await axios.post(`/gpt/complete`, {
+      prompt: prompt,
+      cnt: 4,
+      type: 'qna'
+    });
 
-    // setSuggestion(resp.data.result)
+    setSuggestion(resp.data.result)
 
     /* --------------- 더미 ------------------ */
-    setSuggestion(dummyQna)
+    // setSuggestion(dummyQna)
 
     setQuestionLoading(false);
   }
@@ -94,29 +97,57 @@ const Helper = (props) => {
     items.map(async (value, idx) => {
       if (!value) return;
       /* --------------- 실제 환경 ------------------ */
-      // const prompt = solutionPrompt(histories, values, value, props.prompt)
+      const prompt = solutionPrompt(histories, values, value, props.prompt)
 
-      // const resp = await axios.post(`/gpt/complete`, {
-      //   prompt: prompt,
-      //   cnt: 1,
-      // });
+      const resp = await axios.post(`/gpt/complete`, {
+        prompt: prompt,
+        cnt: 1,
+      });
 
-      // new_prompts[`p${Number(idx) + 1}_answer`] = value
-      // new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
-      // setPrompt({...new_prompts})
+      new_prompts[`p${Number(idx) + 1}_answer`] = value
+      new_prompts[`p${Number(idx) + 1}`] = resp.data.result[0]
+      setPrompt({...new_prompts})
 
-      // const img_resp = await axios.get(generateUrl(resp.data.result[0]))
-      // // const img_resp = await axios.get('?cnt=6')
-      // new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
-      // setPrompt({...new_prompts})
+      const img_resp = await axios.get(generateUrl(resp.data.result[0]))
+      // const img_resp = await axios.get('?cnt=6')
+      new_prompts[`p${Number(idx) + 1}_images`] = img_resp.data.result
+      setPrompt({...new_prompts})
 
 
       /* --------------- 더미 ------------------ */
-      new_prompts[`p${Number(idx) + 1}_answer`] = value
-      new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
-      new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
-      setPrompt({ ...new_prompts })
+      // new_prompts[`p${Number(idx) + 1}_answer`] = value
+      // new_prompts[`p${Number(idx) + 1}`] = 'promptprompt'
+      // new_prompts[`p${Number(idx) + 1}_images`] = dummyImages
+      // setPrompt({ ...new_prompts })
     })
+  }
+
+  const generateInitialImage = async () => {
+    const img_resp = await axios.get(generateUrl(props.prompt))
+
+    let new_prompts = {
+      q: 'Initial Prompt',
+      p1: '',
+      p1_answer: '',
+      p1_images: [],
+      p2: '',
+      p2_answer: '',
+      p2_images: [],
+      p3: '',
+      p3_answer: '',
+      p3_images: [],
+      p4: '',
+      p4_answer: '',
+      p4_images: [],
+      p5: '',
+      p4_answer: '',
+      p5_images: [],
+    }
+    new_prompts.p1_answer = props.prompt
+    new_prompts.p1 = props.prompt
+    new_prompts.p1_images = img_resp.data.result
+
+    setPrompt({ ...new_prompts })
   }
 
   const addHistory = ({ question, answer, images }) => {
@@ -150,13 +181,37 @@ const Helper = (props) => {
 
     setHistory(new_history)
     getQuestion(new_history);
+
+    form.setFieldsValue({
+      question: '',
+      answer1: '',
+      answer2: '',
+      answer3: '',
+      answer4: ''
+    })
+    setSelected(null)
   };
 
   const onFill = (values) => {
     form.setFieldsValue({
-      question: values.question
+      question: values.question,
+      answer1: '',
+      answer2: '',
+      answer3: '',
+      answer4: ''
     })
     setSelected(values);
+  }
+
+  const deleteAnswer = (answer) => {
+    let new_history = []
+
+    histories.map(history => {
+      if (history?.answer !== answer) new_history.push(history)
+    })
+
+    setHistory(new_history)
+    initPrompts()
   }
 
   return (
@@ -178,6 +233,7 @@ const Helper = (props) => {
                   <>
                     <Popover placement="bottom" title={history.question} content={history.answer} trigger="hover">
                       <Button style={{ marginRight: '5px', borderRadius: '30px' }}>{history.answer}</Button>
+                      <span onClick={() => deleteAnswer(history.answer)} style={{color: 'red', cursor: 'pointer'}}>X</span>
                     </Popover>
                   </>
                 ))}
